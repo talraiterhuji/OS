@@ -19,7 +19,7 @@
 struct measurement measure_latency(uint64_t repeat, array_element_t* arr, uint64_t arr_size, uint64_t zero){
     repeat = arr_size > repeat ? arr_size:repeat; // Make sure repeat >= arr_size
 
-    // Baseline measurement:
+    // Baseline measurement:gggg
     struct timespec t0;
     timespec_get(&t0, TIME_UTC);
     register uint64_t rnd=12345;
