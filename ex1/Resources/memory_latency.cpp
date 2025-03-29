@@ -78,10 +78,40 @@ struct measurement measure_sequential_latency(uint64_t repeat, array_element_t* 
  */
 int main(int argc, char* argv[])
 {
-    // zero==0, but the compiler doesn't know it. Use as the zero arg of measure_latency and measure_sequential_latency.
-    struct timespec t_dummy;
-    timespec_get(&t_dummy, TIME_UTC);
-    const uint64_t zero = nanosectime(t_dummy)>1000000000ull?0:nanosectime(t_dummy);
+  {
+	uint64_t max_size = strtoull(argv[1], NULL, 10);
+	double factor = atof(argv[2]);
+	uint64_t repeat = strtoull(argv[3], NULL, 10);
 
-    // Your code here
+	// zero==0, but the compiler doesn't know it. Use as the zero arg of measure_latency and measure_sequential_latency.
+	struct timespec t_dummy;
+	timespec_get(&t_dummy, TIME_UTC);
+	const uint64_t zero = nanosectime(t_dummy)>1000000000ull?0:nanosectime(t_dummy);
+
+	for (double size = 100; size <= max_size; size *= factor)
+	  {
+		uint64_t arr_len = (uint64_t)(size / sizeof(array_element_t));
+		if (arr_len == 0) arr_len = 1;
+
+		array_element_t* arr = (array_element_t*)malloc(arr_len * sizeof(array_element_t));
+		if (!arr) {
+			perror("malloc failed");
+			return -1;
+		  }
+
+		for (uint64_t i = 0; i < arr_len; i++)
+		  arr[i] = (array_element_t)(i + 1);
+
+		struct measurement m1 = measure_latency(repeat, arr, arr_len, zero);
+		struct measurement m2 = measure_sequential_latency(repeat, arr, arr_len, zero);
+
+		double offset_random = m1.access_time - m1.baseline;
+		double offset_seq = m2.access_time - m2.baseline;
+
+		printf("%lu,%.2f,%.2f\n", arr_len * sizeof(array_element_t), offset_random, offset_seq);
+
+		free(arr);
+	  }
+	return 0;
+  }
 }
