@@ -28,7 +28,38 @@ uint64_t nanosectime(struct timespec t)
 */
 struct measurement measure_sequential_latency(uint64_t repeat, array_element_t* arr, uint64_t arr_size, uint64_t zero)
 {
-    // Your code here
+    repeat = arr_size > repeat ? arr_size : repeat;
+
+    struct timespec t0;
+    timespec_get(&t0, TIME_UTC);
+    register uint64_t rnd = 12345;
+    for (register uint64_t i = 0; i < repeat; i++) {
+        register uint64_t index = i % arr_size;
+        rnd ^= index & zero;
+        rnd = (rnd >> 1) ^ ((0 - (rnd & 1)) & GALOIS_POLYNOMIAL);
+    }
+    struct timespec t1;
+    timespec_get(&t1, TIME_UTC);
+
+    struct timespec t2;
+    timespec_get(&t2, TIME_UTC);
+    rnd = (rnd & zero) ^ 12345;
+    for (register uint64_t i = 0; i < repeat; i++) {
+        register uint64_t index = i % arr_size;
+        rnd ^= arr[index] & zero;
+        rnd = (rnd >> 1) ^ ((0 - (rnd & 1)) & GALOIS_POLYNOMIAL);
+    }
+    struct timespec t3;
+    timespec_get(&t3, TIME_UTC);
+
+    double baseline_per_cycle = (double)(nanosectime(t1) - nanosectime(t0)) / repeat;
+    double memory_per_cycle = (double)(nanosectime(t3) - nanosectime(t2)) / repeat;
+    struct measurement result;
+
+    result.baseline = baseline_per_cycle;
+    result.access_time = memory_per_cycle;
+    result.rnd = rnd;
+    return result;
 }
 
 /**
