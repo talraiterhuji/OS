@@ -12,7 +12,7 @@
  */
 uint64_t nanosectime(struct timespec t)
 {
-	// Your code here
+  (uint64_t)t.tv_sec * 1000000000 + t.tv_nsec;
 }
 
 /**
