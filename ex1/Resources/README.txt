@@ -1,3 +1,38 @@
+talraiter, liorshapira
+Tal Raiter (208997908), Lior Shapira (315465765)
+EX: 1
+
+FILES:
+memory_latency.cpp – Main program logic and measurements.
+memory_latency.h – Type definitions and function declarations.
+measure.cpp – Random access latency measurement implementation.
+measure.h – Declaration for measure_latency.
+plot_example.py – Script for plotting the results.
+memory_latency_results.csv – Output data from the program.
+results.png – Generated plot image.
+lscpu.png – Screenshot of the CPU info (required for submission).
+
+REMARKS:
+
+ANSWERS:
+
+Assignment 1
+
+When the program is executed with exactly one argument,
+it begins by creating a directory named Welcome.
+It then creates and opens three files within that directory:
+Welcome, To, and OS-2024, each with write permissions and truncation if the file
+already exists. The program writes the following messages to the files:
+Welcome/Welcome:
+"liorshapira\nIf you haven't read the instructions yet, read them now!"
+Welcome/To:
+"Start exercises early!"
+Welcome/OS-2024:
+"Good luck!"
+After writing the messages, it closes all the files,
+deletes them using unlink(), and removes the Welcome directory using rmdir().
+Finally, the program terminates successfully with exit code 0.
+
 When the program is executed with a number of arguments not equal to one,
 it begins by duplicating the file associated with file descriptor 2 (standard error)
 using the dup(2) system call. It then checks the access modes and flags of the
@@ -8,7 +43,8 @@ Interestingly, this message is immediately followed by a "Success"
 message. Finally, the program terminates by calling exit_group(0),
 exiting with status code 0.
 
-2.4.3 Results Discussion
+Assignment 2
+Results Discussion
 
 # What patterns do we observe?
 We can see that random access latency increases as the array size grows,
