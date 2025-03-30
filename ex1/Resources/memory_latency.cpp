@@ -79,9 +79,29 @@ struct measurement measure_sequential_latency(uint64_t repeat, array_element_t* 
 int main(int argc, char* argv[])
 {
   {
+	if (argc != 4) {
+		fprintf(stderr, "Usage: %s max_size factor repeat\n", argv[0]);
+		return -1;
+	  }
+
 	uint64_t max_size = strtoull(argv[1], NULL, 10);
 	double factor = atof(argv[2]);
 	uint64_t repeat = strtoull(argv[3], NULL, 10);
+
+	if (max_size < 100) {
+		fprintf(stderr, "Error: max_size must be >= 100.\n");
+		return -1;
+	  }
+
+	if (factor <= 1.0) {
+		fprintf(stderr, "Error: factor must be > 1.\n");
+		return -1;
+	  }
+
+	if (repeat == 0) {
+		fprintf(stderr, "Error: repeat must be > 0.\n");
+		return -1;
+	  }
 
 	// zero==0, but the compiler doesn't know it. Use as the zero arg of measure_latency and measure_sequential_latency.
 	struct timespec t_dummy;
