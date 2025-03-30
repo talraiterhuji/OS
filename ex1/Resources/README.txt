@@ -22,6 +22,15 @@ Random access starts fast, then slows down at the L1, L2, and L3 cache sizes.
 Sequential access remains fast because of how modern CPUs handle memory access
 (cache lines and prefetching).
 
+# Why is sequential access faster than random access?
+Sequential access benefits from:
+Cache lines: Each memory load brings a whole block (usually 64 bytes),
+so many values are read at once.
+Prefetching: The CPU can guess that we're accessing memory in order and loads
+the next blocks in advance.
+Random access doesn’t help the CPU predict anything – each access may go to
+a completely different memory area, so there are more cache misses and longer delays.
+
 # How do cache levels affect latency?
 When the array fits in L1 cache, access is very fast (≈1 ns).
 Once it no longer fits, the CPU has to go to L2 (slower),
